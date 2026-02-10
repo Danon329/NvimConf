@@ -907,11 +907,6 @@ require('lazy').setup({
           comments = { italic = false }, -- Disable italics in comments
         },
       }
-
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'jb'
     end,
   },
 
@@ -996,6 +991,7 @@ require('lazy').setup({
   require 'kickstart.plugins.vimtex', -- adds a LaTeX Compiler
   require 'custom.plugins.oil',
   require 'custom.plugins.jb',
+  require 'custom.plugins.catppuccin',
   --
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
@@ -1030,13 +1026,15 @@ require('lazy').setup({
   },
 })
 
--- Creating own server
--- check if server is running
---local is_server_running = vim.uv.fs_stat '~/Documents/NerdellStudio/Projects/RaIN/RaIN/rainserver.pipe'
--- start server if not running
---if not is_server_running then
---  vim.fn.serverstart '~/Documents/NerdellStudio/Projects/RaIN/RaIN/rainserver.pipe'
---end
+--autocommand to deactivate auto-commenting in the files
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = '*',
+  callback = function()
+    vim.opt_local.formatoptions:remove { 'r', 'o' }
+    -- 'r': auto insert comment in insert mode
+    -- 'o': auto insert comment in normal mode
+  end,
+})
 
--- The line beneath this is called `modeline`. See `:help modeline`
--- vim: set ts=4 sw=4 et:
+-- colorscheme:
+vim.cmd.colorscheme 'tokyonight-night'
