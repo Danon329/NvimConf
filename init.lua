@@ -577,10 +577,10 @@ require('lazy').setup({
       --  So, we create new capabilities with blink.cmp, and then broadcast that to the servers.
       local capabilities = require('blink.cmp').get_lsp_capabilities()
       -- require('lspconfig').texlab.setup {}
-      vim.lsp.enable 'gdscript'
       -- Enable the following language servers
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
       --
+      vim.lsp.enable 'gdscript'
       --  Add any additional override configuration in the following tables. Available keys are:
       --  - cmd (table): Override the default command used to start the server
       --  - filetypes (table): Override the default list of associated filetypes for the server
@@ -906,7 +906,7 @@ require('lazy').setup({
   require 'custom.plugins.oil',
   require 'custom.plugins.jb',
   require 'custom.plugins.catppuccin',
-  --
+  require 'custom.plugins.godot',
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
@@ -951,4 +951,4 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 -- colorscheme:
-vim.cmd.colorscheme 'tokyonight-night'
+vim.cmd.colorscheme 'catppuccin-mocha'
