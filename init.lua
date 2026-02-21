@@ -118,6 +118,9 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 vim.keymap.set('n', '<leader>lv', '<cmd>vsplit<CR>', { desc = 'Sp[l]it [v]ertically' })
 vim.keymap.set('n', '<leader>lh', '<cmd>split<CR>', { desc = 'Sp[l]it [h]orizontally' })
 
+-- open terminal
+vim.keymap.set('n', '<leader>n', '<cmd>terminal<CR>', { desc = 'Open Termi[n]al' })
+
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
@@ -601,7 +604,31 @@ require('lazy').setup({
           },
         },
         -- gopls = {},
-        -- pyright = {},
+        pyright = {
+          settings = {
+            pyright = {
+              disableOrganizeImports = true,
+            },
+            python = {
+              analysis = {
+                typeCheckingMode = 'off',
+                diagnosticMode = 'off',
+                ignore = { '*' },
+              },
+            },
+          },
+        },
+
+        ruff = {
+          on_attach = function(client, bufnr)
+            client.server_capabilities.hoverProvider = false
+          end,
+          init_options = {
+            settings = {
+              logLevel = 'info',
+            },
+          },
+        },
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -907,7 +934,9 @@ require('lazy').setup({
   require 'custom.plugins.catppuccin',
   require 'custom.plugins.godot',
   require 'custom.plugins.java',
-  -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
+  -- TODO: Add a LaTeX Compiler
+
+  -- The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
