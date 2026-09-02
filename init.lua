@@ -123,6 +123,10 @@ vim.keymap.set('n', '<leader>lh', '<cmd>split<CR>', { desc = 'Sp[l]it [h]orizont
 -- open terminal
 vim.keymap.set('n', '<leader>n', '<cmd>terminal<CR>', { desc = 'Open Termi[n]al' })
 
+-- Godot commands
+vim.keymap.set('n', '<leader>gd', '<cmd>GodotDebug<CR>', { desc = '[G]odot[D]ebug' })
+vim.keymap.set('n', '<leader>gq', '<cmd>GodotQuit<CR>', { desc = '[G]odot[Q]uit' })
+
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
@@ -393,6 +397,7 @@ require('lazy').setup({
       library = {
         -- Load luvit types when the `vim.uv` word is found
         { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+        { path = '/Users/daniel/.config/sketchybar/SbarLua', words = { 'sbar' } },
       },
     },
   },
@@ -585,7 +590,6 @@ require('lazy').setup({
       -- Enable the following language servers
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
       --
-      vim.lsp.enable 'gdscript'
       --  Add any additional override configuration in the following tables. Available keys are:
       --  - cmd (table): Override the default command used to start the server
       --  - filetypes (table): Override the default list of associated filetypes for the server
@@ -631,6 +635,7 @@ require('lazy').setup({
             },
           },
         },
+
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -895,22 +900,23 @@ require('lazy').setup({
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    branch = 'main',
     build = ':TSUpdate',
-    main = 'nvim-treesitter.configs', -- Sets main module to use for opts
+    main = 'nvim-treesitter', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-    opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
-      -- Autoinstall languages that are not installed
-      auto_install = true,
-      highlight = {
-        enable = true,
-        -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-        --  If you are experiencing weird indenting issues, add the language to
-        --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
-      },
-      indent = { enable = false, disable = { 'ruby' } },
-    },
+    --    opts = {
+    --      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+    --      -- Autoinstall languages that are not installed
+    --      auto_install = true,
+    --      highlight = {
+    --        enable = true,
+    --        -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
+    --        --  If you are experiencing weird indenting issues, add the language to
+    --        --  the list of additional_vim_regex_highlighting and disabled languages for indent.
+    --        additional_vim_regex_highlighting = { 'ruby' },
+    --      },
+    --      indent = { enable = false, disable = { 'ruby' } },
+    --    },
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
     --
@@ -929,13 +935,15 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   require 'kickstart.plugins.debug',
-  require 'kickstart.plugins.autopairs',
+  -- require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
   require 'custom.plugins.oil',
   require 'custom.plugins.jb',
   require 'custom.plugins.catppuccin',
   require 'custom.plugins.godot',
   require 'custom.plugins.java',
+  require 'custom.plugins.kanagawa',
+
   -- TODO: Add a LaTeX Compiler
 
   -- The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
@@ -971,6 +979,14 @@ require('lazy').setup({
   },
 })
 
+--Treesitter autocmd for syntax highlighting
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { '*' },
+  callback = function()
+    pcall(vim.treesitter.start)
+  end,
+})
+
 --autocommand to deactivate auto-commenting in the files
 vim.api.nvim_create_autocmd('FileType', {
   pattern = '*',
@@ -981,5 +997,7 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
+vim.lsp.enable 'gdscript'
+
 -- colorscheme:
-vim.cmd.colorscheme 'catppuccin-mocha'
+vim.cmd.colorscheme 'kanagawa-dragon'
