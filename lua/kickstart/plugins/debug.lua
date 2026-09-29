@@ -27,7 +27,7 @@ return {
   keys = {
     -- Basic debugging keymaps, feel free to change to your liking!
     {
-      '<F5>',
+      '<M-b>',
       function()
         require('dap').continue()
       end,

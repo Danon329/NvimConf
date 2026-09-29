@@ -127,6 +127,9 @@ vim.keymap.set('n', '<leader>n', '<cmd>terminal<CR>', { desc = 'Open Termi[n]al'
 vim.keymap.set('n', '<leader>gd', '<cmd>GodotDebug<CR>', { desc = '[G]odot[D]ebug' })
 vim.keymap.set('n', '<leader>gq', '<cmd>GodotQuit<CR>', { desc = '[G]odot[Q]uit' })
 
+-- Clang commands
+vim.keymap.set('n', '<leader>w', '<cmd>LspClangdSwitchSourceHeader<CR>', { desc = 'S[w]itch Source Header' })
+
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
@@ -605,8 +608,8 @@ require('lazy').setup({
             '--clang-tidy',
             '--header-insertion=iwyu',
             '--completion-style=detailed',
-            '--function-arg-placeholders',
-            '--fallback-style=llvm',
+            '--function-arg-placeholders="0"',
+            '--fallback-style="Google"',
           },
         },
         -- gopls = {},
@@ -943,6 +946,7 @@ require('lazy').setup({
   require 'custom.plugins.godot',
   require 'custom.plugins.java',
   require 'custom.plugins.kanagawa',
+  require 'custom.plugins.neominimap',
 
   -- TODO: Add a LaTeX Compiler
 
@@ -979,11 +983,26 @@ require('lazy').setup({
   },
 })
 
+vim.filetype.add {
+  extension = {
+    mm = 'objcpp',
+  },
+}
+
+vim.treesitter.language.register('cpp', 'objcpp')
+
 --Treesitter autocmd for syntax highlighting
 vim.api.nvim_create_autocmd('FileType', {
   pattern = { '*' },
   callback = function()
     pcall(vim.treesitter.start)
+  end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'cpp', 'objc', 'objcpp', 'c' },
+  callback = function()
+    vim.bo.indentexpr = [[v:lua.require'nvim-treesitter'.indentexpr()]]
   end,
 })
 
@@ -993,7 +1012,9 @@ vim.api.nvim_create_autocmd('FileType', {
   callback = function()
     -- 'r': auto insert comment in insert mode
     -- 'o': auto insert comment in normal mode
-    vim.opt_local.formatoptions:remove { 'r', 'o' }
+    vim.schedule(function()
+      vim.opt_local.formatoptions:remove { 'r', 'o' }
+    end)
   end,
 })
 
